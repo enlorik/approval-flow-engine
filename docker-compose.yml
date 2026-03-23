@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: approvaldb
+      POSTGRES_USER: approvaluser
+      POSTGRES_PASSWORD: approvalpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/approvaldb
+      DATABASE_USERNAME: approvaluser
+      DATABASE_PASSWORD: approvalpass
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
